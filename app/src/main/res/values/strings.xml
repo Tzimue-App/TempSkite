@@ -1,0 +1,93 @@
+<resources>
+    <!-- Generic -->
+    <string name="app_name">Skite</string>
+    <string name="no_data">Aucune donnée à afficher</string>
+    <string name="search_bar_no_result">Aucun résultat pour \"%1$s\"</string>
+    <string name="retry">Réessayer</string>
+    <string name="back">Retour</string>
+    <string name="add">Ajouter</string>
+    <string name="cancel">Annuler</string>
+    <string name="generic_error">Une erreur est survenue.</string>
+
+    <!-- HomeScreen -->
+    <string name="home_title">Accueil</string>
+    <string name="home_welcome">Bienvenue sur Skite</string>
+    <string name="home_description">Votre compagnon pour la gestion simplifiée des groupes et des sessions d\'entraînement.</string>
+
+    <!-- SettingsScreen -->
+    <string name="settings_title">Paramètres</string>
+
+    <!-- GroupScreens -->
+    <string name="group_screen_groups_title">Classes</string>
+
+    <!-- GroupListScreen -->
+    <string name="group_list_screen_search_bar">Rechercher par nom ou année...</string>
+    <string name="group_list_screen_new_group">Nouvelle classe</string>
+
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_screen_not_found">Ce groupe est introuvable.</string>
+    <string name="group_detail_content_students_header_title">Étudiant(s) (%1$d)</string>
+    <string name="group_detail_content_sessions_header_title">Session(s) (%1$d)</string>
+
+    <!-- Session Screens -->
+    <string name="sessions_title">Sessions</string>
+    <string name="no_sessions">Aucune session d\'entraînement</string>
+
+    <!-- Student Screens -->
+    <string name="temp_students_title">Étudiants</string>
+    <string name="temp_no_students">Aucun étudiant</string>
+    <string name="temp_student_not_found">Étudiant introuvable</string>
+
+    <!-- StudentListScreen -->
+    <string name="temp_student_list_screen_search_bar">Rechercher un étudiant...</string>
+
+    <!-- StudentDetailScreen -->
+    <string name="temp_student_detail_group_title">Groupe :</string>
+
+    <!-- Settings Screens -->
+
+    <!-- Session Result Screens -->
+    <string name="settings_session_result_title">Paramétrage des cours et des résultats</string>
+    <string name="settings_edit_result_type">edit 1</string>
+    <string name="settings_create_result_type">edit 2</string>
+    <string name="settings_config_name_label">edit 3</string>
+    <string name="settings_update">edit 4</string>
+    <string name="settings_save">edit 5</string>
+    <string name="settings_cancel">edit 6</string>
+    <string name="settings_existing_result_types">edit 7</string>
+    <string name="settings_result_type_info">edit 8</string>
+    <string name="settings_result_type_placeholder">edit 9</string>
+    <string name="settings_result_template_label">edit 10</string>
+    <string name="settings_no_templates">edit 11</string>
+    <string name="settings_tab_session_types">edit 12</string>
+    <string name="settings_tab_result_types">edit 13</string>
+    <string name="settings_edit_session_type">edit 14</string>
+    <string name="settings_create_session_type">edit 15</string>
+    <string name="settings_session_name_label">edit 16</string>
+    <string name="settings_default_grade_label">edit 17</string>
+    <string name="settings_existing_session_types">edit 18</string>
+    <string name="settings_session_type_info">edit 19</string>
+    <string name="settings_unknown">edit 20</string>
+    <string name="settings_skills_count">edit 21</string>
+    <string name="settings_skill_name">edit 22</string>
+    <string name="settings_ratio_error">edit 23</string>
+    <string name="settings_tool_label">edit 24</string>
+
+
+    <!-- AddStudentDialog -->
+    <string name="add_student_dialog_title">Ajouter des étudiants</string>
+    <string name="add_student_dialog_description">Entrez les noms séparés par des virgules ou des retours à la ligne :</string>
+    <string name="add_student_dialog_placeholder">Alice, Bob\nCharlie</string>
+
+    <!-- AttendancesEnum -->
+    <string name="attendance_enum_present_value">Present</string>
+    <string name="attendance_enum_present_short">P</string>
+    <string name="attendance_enum_missing_value">Missing</string>
+    <string name="attendance_enum_missing_short">M</string>
+    <string name="attendance_enum_mc_value">Medical certificat</string>
+    <string name="attendance_enum_mc_short">MC</string>
+    <string name="attendance_enum_pn_value">Parent note</string>
+    <string name="attendance_enum_pn_short">PN</string>
+    <string name="attendance_enum_other_value">Other</string>
+    <string name="attendance_enum_other_short">O</string>
+</resources>
