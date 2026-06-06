@@ -2,6 +2,7 @@ package com.example.skite.data.repositories
 
 import com.example.skite.config.CacheConfig
 import com.example.skite.data.dao.StudentSessionResultDao
+import com.example.skite.data.entities.session.Session
 import com.example.skite.data.entities.session.SessionWithAttendances
 import com.example.skite.data.entities.session.StudentSessionResult
 import com.example.skite.data.entities.session.StudentSessionResultWithSessionResult
@@ -46,4 +47,7 @@ class StudentSessionResultRepository @Inject constructor(
 
     fun findWithSessionResultFlow(id: Int): Flow<DataResult<StudentSessionResultWithSessionResult>> =
         findSingleFlow(id = id) { dao.findWithSessionResultFlow(id) }
+
+    fun findWithSessionResultBySessionIdFlow(session: Session): Flow<DataResult<List<StudentSessionResultWithSessionResult>>> =
+        findAllFlow { dao.findWithSessionResultBySessionIdFlow(session.id) }
 }

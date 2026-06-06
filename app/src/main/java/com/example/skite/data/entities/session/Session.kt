@@ -39,7 +39,6 @@ data class Session(
     val date: Date?,
     val groupId: Int,
     val sessionTypeId: Int? = null,
-    val sportType: SessionSportType = SessionSportType.RUNNING,
     val state: SessionState = SessionState.PLANNED
 ) : EntityWithId<Int> {
     override fun entityId(): Int = id

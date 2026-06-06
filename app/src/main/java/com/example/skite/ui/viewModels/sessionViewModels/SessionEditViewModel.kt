@@ -33,11 +33,10 @@ class SessionEditViewModel @Inject constructor(
     fun initSession(groupId: Int?) {
         _session.value = Session(
             name = "",
-            sportType = com.example.skite.data.entities.enums.SessionSportType.RUNNING,
             state = com.example.skite.data.entities.enums.SessionState.PLANNED,
             date = Date(),
             groupId = groupId ?: 0,
-            // snapshotsJson = null,
+            sessionTypeId = null,
             id = 0
         )
     }

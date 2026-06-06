@@ -7,7 +7,7 @@ import com.example.skite.data.entities.enums.SessionState
 import com.example.skite.data.entities.session.Session
 import com.example.skite.data.entities.sessionType.SessionType
 import com.example.skite.data.entities.student.Student
-import com.example.skite.ui.viewModels.sessionViewModels.SessionViewModel.SessionDetailUiState
+import com.example.skite.ui.viewModels.sessionViewModels.SessionViewModel.UiState
 import java.util.Date
 
 @Preview(showBackground = true)
@@ -15,7 +15,7 @@ import java.util.Date
 private fun SessionDetailScreenPlannedPreview() {
     MaterialTheme {
         SessionDetailScreenContent(
-            uiState = SessionDetailUiState.Success(
+            uiState = UiState.Success(
                 session = Session(
                     id = 1,
                     name = "Swim Meet",
@@ -23,13 +23,18 @@ private fun SessionDetailScreenPlannedPreview() {
                     groupId = 1,
                     state = SessionState.PLANNED
                 ),
-                sessionType = SessionType(1, "Chrono Mode", 1, "chono"),
-                students = listOf(
+                sessionType = SessionType(1, "Chrono Mode", 1, "chrono"),
+                groupStudents = listOf(
+                    Student(id = 1, name = "John Doe", number = 1, groupId = 1),
+                    Student(id = 2, name = "Jane Smith", number = 2, groupId = 1)
+                ),
+                presentStudents = listOf(
                     Student(id = 1, name = "John Doe", number = 1, groupId = 1),
                     Student(id = 2, name = "Jane Smith", number = 2, groupId = 1)
                 ),
                 attendances = emptyMap(),
-                results = emptyMap()
+                results = emptyMap(),
+                currentGradeDisplay = 100
             ),
             openDrawer = {},
             onNavigateBack = {},
@@ -38,7 +43,6 @@ private fun SessionDetailScreenPlannedPreview() {
             onUpdateAttendance = { _, _, _ -> },
             onUpdateResultJson = { _, _, _ -> },
             onOverrideGrade = { _, _, _ -> },
-            onToggleStudents = {},
             onRetry = {}
         )
     }

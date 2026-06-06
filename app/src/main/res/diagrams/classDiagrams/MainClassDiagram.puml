@@ -1,0 +1,91 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Group {
+-id: Int
+-name: String
+-year: Int
+}
+
+class Session {
+-id: Id
+-name: String
+-date: Date?
+-groupId: Int
+-sessionTypeId: Int?
+-state: SessionState = PLANNED
+}
+
+class Student {
+-id: Int
+-name: String
+-number: Int
+-groupId: Int
+}
+
+class Attendance{
+-id: Int
+-sessionId: Int
+-studentId: Int
+-attendance: SessionAttendance
+}
+
+class StudentSessionResult {
+-id: Int
+-studentId: Int
+-sessionId: Int
+-data: String
+-updated: Bool
+}
+
+class SessionResult{
+-id: Int
+-studentSessionResultId: Int
+-grade: Float
+}
+
+class SessionType {
+-id: Int
+-name: String
+-resultTypeId: Int
+-tool: String = SessionTool.NONE.value
+-defaultGradeDisplay: Int = 100
+}
+
+class ResultType {
+id: Int
+name: String
+toolName: String = SessionTool.NONE.value
+date: String
+}
+
+Group -- Session
+Group -- Student
+Session -- Attendance
+Student -- Attendance
+Session -- StudentSessionResult
+Student -- StudentSessionResult
+Session -- SessionType
+SessionType -- ResultType
+StudentSessionResult -- SessionResult
+
+enum SessionAttendance {
+PRESENT
+MISSING
+MISSING_MC
+MISSING_PARENT
+OTHER
+}
+
+enum SessionState {
+PLANNED
+IN_PROGRESS
+FINNISH
+}
+
+enum SessionTool{
+NONE
+TIMER
+}
+
+@enduml

@@ -7,9 +7,12 @@ import com.example.skite.data.entities.attendance.Attendance
 import com.example.skite.data.entities.enums.SessionAttendance
 import com.example.skite.data.entities.enums.SessionState
 import com.example.skite.data.entities.session.Session
+import com.example.skite.data.entities.session.SessionResult
 import com.example.skite.data.entities.session.StudentSessionResult
+import com.example.skite.data.entities.session.StudentSessionResultWithSessionResult
 import com.example.skite.data.entities.sessionType.SessionType
 import com.example.skite.data.entities.student.Student
+import com.example.skite.data.error.DatabaseError
 import com.example.skite.data.repositories.*
 import com.example.skite.data.result.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,105 +26,112 @@ import javax.inject.Inject
 class SessionViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val sessionRepository: SessionRepository,
-    private val studentRepository: StudentRepository,
     private val attendanceRepository: AttendanceRepository,
     private val studentSessionResultRepository: StudentSessionResultRepository,
+    private val sessionResultRepository: SessionResultRepository,
     private val sessionTypeRepository: SessionTypeRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    sealed class SessionDetailUiState {
-        object Loading : SessionDetailUiState()
-        data class Error(val message: String?, val retryable: Boolean = true) : SessionDetailUiState()
-        object NotFound : SessionDetailUiState()
+    sealed class UiState {
+        object Loading : UiState()
+        object Empty : UiState()
+        data class Error(
+            val message: String?,
+            val retryable: Boolean = true
+        ) : UiState()
         data class Success(
             val session: Session,
             val sessionType: SessionType?,
-            val students: List<Student>,
+            val groupStudents: List<Student>,
+            val presentStudents: List<Student>,
             val attendances: Map<Int, Attendance>,
-            val results: Map<Int, StudentSessionResult>,
-            val isStudentListExpanded: Boolean = true
-        ) : SessionDetailUiState()
+            val results: Map<Int, StudentSessionResultWithSessionResult>,
+            val currentGradeDisplay: Int
+        ) : UiState()
     }
 
     private val sessionId: Int = savedStateHandle["sessionId"]
         ?: throw IllegalArgumentException("sessionId missing from SavedStateHandle")
 
-    private val _uiState = MutableStateFlow<SessionDetailUiState>(SessionDetailUiState.Loading)
-    val uiState: StateFlow<SessionDetailUiState> = _uiState.asStateFlow()
+    private val _manualGradeDisplay = MutableStateFlow<Int?>(null)
+    private val _manualError = MutableStateFlow<UiState.Error?>(null)
 
-    init {
-        loadSessionData()
-    }
-
-    fun retry() = loadSessionData()
-
-    private fun loadSessionData() {
-        viewModelScope.launch {
-            _uiState.value = SessionDetailUiState.Loading
-
-            sessionRepository.findWithAttendancesFlow(sessionId).filterNotNull().flatMapLatest { sessionResult ->
-                when (sessionResult) {
-                    is DataResult.Success -> {
-                        val sessionWithAtt = sessionResult.data ?: return@flatMapLatest flowOf(SessionDetailUiState.NotFound)
-                        val session = sessionWithAtt.session
-                        val attendances = sessionWithAtt.attendances.associateBy { it.studentId }
-
-                        val sessionTypeFlow = if (session.sessionTypeId != null) {
-                            sessionTypeRepository.findByIdFlow(session.sessionTypeId)
-                        } else {
-                            flowOf(DataResult.Success(null))
-                        }
-
-                        combine(
-                            groupRepository.findWithStudentsFlow(session.groupId).filterNotNull(),
-                            sessionTypeFlow,
-                            studentSessionResultRepository.findBySessionIdFlow(session.id)
-                        ) { groupRes, typeRes, resultRes ->
-                            val students = if (groupRes is DataResult.Success && groupRes.data != null) {
-                                groupRes.data.students
-                            } else emptyList()
-
-                            val sessionType = if (typeRes is DataResult.Success) typeRes.data else null
-                            val results = if (resultRes is DataResult.Success) {
-                                resultRes.data.associateBy { it.studentId }
-                            } else emptyMap()
-
-                            SessionDetailUiState.Success(
-                                session = session,
-                                sessionType = sessionType,
-                                students = students,
-                                attendances = attendances,
-                                results = results
-                            )
-                        }
-                    }
-                    is DataResult.Error -> flowOf(SessionDetailUiState.Error(sessionResult.error.message))
-                }
-            }.collect { newState ->
-                val currentExp = (_uiState.value as? SessionDetailUiState.Success)?.isStudentListExpanded ?: true
-                _uiState.value = if (newState is SessionDetailUiState.Success) {
-                    newState.copy(isStudentListExpanded = currentExp)
-                } else newState
+    val uiState: StateFlow<UiState> = sessionRepository.findWithAttendancesFlow(sessionId)
+        .filterNotNull()
+        .flatMapLatest { sessionResult ->
+            if (sessionResult is DataResult.Error) {
+                return@flatMapLatest flowOf(UiState.Error(sessionResult.error.message))
             }
-        }
+            val sessionData = (sessionResult as DataResult.Success).data
+                ?: return@flatMapLatest flowOf(UiState.Empty)
+
+            val session = sessionData.session
+            val attendances = sessionData.attendances.associateBy { it.studentId }
+
+            val sessionTypeFlow = session.sessionTypeId?.let {
+                sessionTypeRepository.findByIdFlow(it)
+            } ?: flowOf(DataResult.Success(null))
+
+            combine(
+                groupRepository.findWithStudentsFlow(session.groupId).filterNotNull(),
+                sessionTypeFlow,
+                studentSessionResultRepository.findWithSessionResultBySessionIdFlow(session),
+                _manualGradeDisplay,
+                _manualError
+            ) { groupRes, typeRes, resultRes, manualGrade, manualError ->
+                if (manualError != null) return@combine manualError
+                if (groupRes is DataResult.Error) {
+                    return@combine UiState.Error(
+                        message = groupRes.error.message,
+                        retryable = groupRes.error !is DatabaseError.EntityNotFound
+                    )
+                }
+
+                val groupData = (groupRes as DataResult.Success).data
+                val students = groupData?.students ?: emptyList()
+
+                val presentStudents = students.filter { student ->
+                    val att = attendances[student.id]?.attendance ?: SessionAttendance.PRESENT
+                    att == SessionAttendance.PRESENT
+                }
+
+                val sessionType = (typeRes as? DataResult.Success)?.data
+                val results = (resultRes as? DataResult.Success)?.data?.associateBy { it.studentSessionResult.studentId } ?: emptyMap()
+
+                val currentGradeDisplay = manualGrade ?: sessionType?.defaultGradeDisplay ?: 100
+
+                UiState.Success(
+                    session = session,
+                    sessionType = sessionType,
+                    groupStudents = students,
+                    presentStudents = presentStudents,
+                    attendances = attendances,
+                    results = results,
+                    currentGradeDisplay = currentGradeDisplay
+                )
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = UiState.Loading
+        )
+
+    fun retry() {
+        _manualError.value = null
     }
 
-    fun toggleStudentListExpanded() {
-        (_uiState.value as? SessionDetailUiState.Success)?.let { state ->
-            _uiState.value = state.copy(isStudentListExpanded = !state.isStudentListExpanded)
-        }
+    fun setGradeDisplay(gradeDisplay: Int) {
+        _manualGradeDisplay.value = gradeDisplay
     }
 
     fun updateAttendance(studentId: Int, sessionId: Int, status: SessionAttendance) {
         viewModelScope.launch {
-            val state = _uiState.value as? SessionDetailUiState.Success ?: return@launch
+            val state = uiState.value as? UiState.Success ?: return@launch
             val existing = state.attendances[studentId]
             if (existing != null) {
-                // UPDATE
                 attendanceRepository.update(existing.copy(attendance = status))
             } else {
-                // INSERT Lazy Creation
                 attendanceRepository.add(
                     Attendance(sessionId = sessionId, studentId = studentId, attendance = status)
                 )
@@ -129,50 +139,85 @@ class SessionViewModel @Inject constructor(
         }
     }
 
-    fun updateResultJson(studentId: Int, sessionId: Int, json: String) {
+    fun updateResultJson(studentId: Int, sessionId: Int, json: String, newGlobalGrade: Float? = null) {
         viewModelScope.launch {
-            val state = _uiState.value as? SessionDetailUiState.Success ?: return@launch
-            val existing = state.results[studentId]
-            if (existing != null) {
-                studentSessionResultRepository.update(existing.copy(data = json))
+            val state = uiState.value as? UiState.Success ?: return@launch
+            val existingRelation = state.results[studentId]
+            val existingStudentResult = existingRelation?.studentSessionResult
+
+            // Upsert StudentSessionResult
+            val savedStudentResultId = if (existingStudentResult != null) {
+                val updatedStudentResult = existingStudentResult.copy(data = json, updated = false)
+                studentSessionResultRepository.update(updatedStudentResult)
+                updatedStudentResult.id
             } else {
-                studentSessionResultRepository.add(
-                    StudentSessionResult(sessionId = sessionId, studentId = studentId, data = json)
-                )
+                val newStudentResult = StudentSessionResult(sessionId = sessionId, studentId = studentId, data = json, updated = false)
+                val addResult = studentSessionResultRepository.add(newStudentResult)
+                if (addResult is DataResult.Success) {
+                    addResult.data.toInt()
+                } else {
+                    return@launch
+                }
+            }
+
+            // Upsert SessionResult if newGlobalGrade is provided
+            if (newGlobalGrade != null && savedStudentResultId > 0) {
+                val existingSessionResult = existingRelation?.sessionResult
+                if (existingSessionResult != null) {
+                    sessionResultRepository.update(existingSessionResult.copy(grade = newGlobalGrade))
+                } else {
+                    sessionResultRepository.add(
+                        SessionResult(studentSessionResultId = savedStudentResultId, grade = newGlobalGrade)
+                    )
+                }
             }
         }
     }
 
     fun overrideFinalGrade(studentId: Int, sessionId: Int, rawGrade: Float) {
         viewModelScope.launch {
-            val state = _uiState.value as? SessionDetailUiState.Success ?: return@launch
-            val existing = state.results[studentId]
+            val state = uiState.value as? UiState.Success ?: return@launch
+            val existingRelation = state.results[studentId]
+            val existingStudentResult = existingRelation?.studentSessionResult
             
-            // Reverse math normalization based on sessionType max configuration
-            val maxDisplay = 100f
-            val normalized = (rawGrade / maxDisplay).coerceIn(0f, 1f)
-
-            if (existing != null) {
-                studentSessionResultRepository.update(existing.copy(updated = true))
+            // Upsert StudentSessionResult with updated = true
+            val savedStudentResultId = if (existingStudentResult != null) {
+                val updatedStudentResult = existingStudentResult.copy(updated = true)
+                studentSessionResultRepository.update(updatedStudentResult)
+                updatedStudentResult.id
             } else {
-                studentSessionResultRepository.add(
-                    StudentSessionResult(sessionId = sessionId, studentId = studentId, updated = true)
-                )
+                val newStudentResult = StudentSessionResult(sessionId = sessionId, studentId = studentId, updated = true)
+                val addResult = studentSessionResultRepository.add(newStudentResult)
+                if (addResult is DataResult.Success) {
+                    addResult.data.toInt()
+                } else {
+                    return@launch
+                }
+            }
+
+            // Upsert SessionResult with the normalized grade
+            if (savedStudentResultId > 0) {
+                val existingSessionResult = existingRelation?.sessionResult
+                if (existingSessionResult != null) {
+                    sessionResultRepository.update(existingSessionResult.copy(grade = rawGrade))
+                } else {
+                    sessionResultRepository.add(
+                        SessionResult(studentSessionResultId = savedStudentResultId.toInt(), grade = rawGrade)
+                    )
+                }
             }
         }
     }
 
     fun startSession() {
-        (_uiState.value as? SessionDetailUiState.Success)?.let { state ->
-            val updated = state.session.copy(state = SessionState.IN_PROGRESS)
-            viewModelScope.launch { sessionRepository.update(updated) }
-        }
+        val state = uiState.value as? UiState.Success ?: return
+        val updated = state.session.copy(state = SessionState.IN_PROGRESS)
+        viewModelScope.launch { sessionRepository.update(updated) }
     }
 
     fun finishSession() {
-        (_uiState.value as? SessionDetailUiState.Success)?.let { state ->
-            val updated = state.session.copy(state = SessionState.FINISHED)
-            viewModelScope.launch { sessionRepository.update(updated) }
-        }
+        val state = uiState.value as? UiState.Success ?: return
+        val updated = state.session.copy(state = SessionState.FINISHED)
+        viewModelScope.launch { sessionRepository.update(updated) }
     }
 }

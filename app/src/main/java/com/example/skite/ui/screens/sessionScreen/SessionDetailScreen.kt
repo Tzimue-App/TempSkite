@@ -22,7 +22,7 @@ import com.example.skite.ui.components.sessions.ChronoEvaluationComponent
 import com.example.skite.ui.components.sessions.DefaultEvaluationComponent
 import com.example.skite.ui.view.drawer.WithDrawer
 import com.example.skite.ui.viewModels.sessionViewModels.SessionViewModel
-import com.example.skite.ui.viewModels.sessionViewModels.SessionViewModel.SessionDetailUiState
+import com.example.skite.ui.viewModels.sessionViewModels.SessionViewModel.UiState
 
 @Composable
 fun SessionDetailScreen(
@@ -37,10 +37,9 @@ fun SessionDetailScreen(
         onNavigateBack = onNavigateBack,
         onStartSession = viewModel::startSession,
         onFinishSession = viewModel::finishSession,
-        onUpdateAttendance = { id, sId, att -> viewModel.updateAttendance(id, sId, att) },
-        onUpdateResultJson = { id, sId, json -> viewModel.updateResultJson(id, sId, json) },
-        onOverrideGrade = { id, sId, grade -> viewModel.overrideFinalGrade(id, sId, grade) },
-        onToggleStudents = viewModel::toggleStudentListExpanded,
+        onUpdateAttendance = { studentId, sessionId, attendance -> viewModel.updateAttendance(studentId, sessionId, attendance) },
+        onUpdateResultJson = { studentId, sessionId, json -> viewModel.updateResultJson(studentId, sessionId, json) },
+        onOverrideGrade = { studentId, sessionId, grade -> viewModel.overrideFinalGrade(studentId, sessionId, grade) },
         onRetry = viewModel::retry
     )
 }
@@ -48,7 +47,7 @@ fun SessionDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionDetailScreenContent(
-    uiState: SessionDetailUiState,
+    uiState: UiState,
     openDrawer: () -> Unit,
     onNavigateBack: () -> Unit,
     onStartSession: () -> Unit,
@@ -56,7 +55,6 @@ fun SessionDetailScreenContent(
     onUpdateAttendance: (Int, Int, SessionAttendance) -> Unit,
     onUpdateResultJson: (Int, Int, String) -> Unit,
     onOverrideGrade: (Int, Int, Float) -> Unit,
-    onToggleStudents: () -> Unit,
     onRetry: () -> Unit
 ) {
     WithDrawer(
@@ -64,21 +62,20 @@ fun SessionDetailScreenContent(
         openDrawer = openDrawer
     ) {
         when (val state = uiState) {
-            is SessionDetailUiState.Loading -> LoadingContent()
-            is SessionDetailUiState.NotFound -> NotFoundContent(
+            is UiState.Loading -> LoadingContent()
+            is UiState.Empty -> NotFoundContent(
                 message = "Session introuvable",
                 onNavigateBack = onNavigateBack
             )
-            is SessionDetailUiState.Error -> ErrorContent(
+            is UiState.Error -> ErrorContent(
                 message = state.message ?: "General Error",
                 onRetry = onRetry
             )
-            is SessionDetailUiState.Success -> {
+            is UiState.Success -> {
                 when (state.session.state) {
                     SessionState.PLANNED -> PlannedContent(
                         state = state,
                         onStartSession = onStartSession,
-                        onToggleStudents = onToggleStudents,
                         onUpdateAttendance = { studentId, att -> onUpdateAttendance(studentId, state.session.id, att) }
                     )
                     SessionState.IN_PROGRESS -> ProgressContent(
@@ -98,11 +95,11 @@ fun SessionDetailScreenContent(
 
 @Composable
 fun PlannedContent(
-    state: SessionDetailUiState.Success,
+    state: UiState.Success,
     onStartSession: () -> Unit,
-    onToggleStudents: () -> Unit,
     onUpdateAttendance: (Int, SessionAttendance) -> Unit
 ) {
+    var isStudentListExpanded by remember { mutableStateOf(true) }
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("State: PLANNED", style = MaterialTheme.typography.titleMedium)
         Text("SessionType Template: ${state.sessionType?.name ?: "No Template Attached"}")
@@ -111,16 +108,16 @@ fun PlannedContent(
             Text("Start Session")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        SectionHeader("Students (${state.students.size})", state.isStudentListExpanded, onToggleStudents)
+        SectionHeader("Students (${state.groupStudents.size})", isStudentListExpanded, { isStudentListExpanded = !isStudentListExpanded })
 
-        if (state.isStudentListExpanded) {
+        if (isStudentListExpanded) {
             LazyColumn {
-                items(state.students, key = { it.id }) { student ->
+                items(state.groupStudents, key = { it.id }) { student ->
                     val currentAtt = state.attendances[student.id]?.attendance
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                           modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                           horizontalArrangement = Arrangement.SpaceBetween,
+                           verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(student.name)
                         Row {
@@ -141,7 +138,7 @@ fun PlannedContent(
 
 @Composable
 fun ProgressContent(
-    state: SessionDetailUiState.Success,
+    state: UiState.Success,
     onFinishSession: () -> Unit,
     onUpdateResultJson: (Int, String) -> Unit
 ) {
@@ -153,19 +150,14 @@ fun ProgressContent(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Only show students marked as PRESENT
-        val presentStudents = state.students.filter { 
-            state.attendances[it.id]?.attendance == SessionAttendance.PRESENT 
-        }
-
         LazyColumn {
-            items(presentStudents, key = { it.id }) { student ->
+            items(state.presentStudents, key = { it.id }) { student ->
                 Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(student.name, style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
                         
-                        val json = state.results[student.id]?.data ?: ""
+                        val json = state.results[student.id]?.studentSessionResult?.data ?: ""
                         if (state.sessionType?.tool == "chrono") {
                             ChronoEvaluationComponent(
                                 jsonData = json,
@@ -186,16 +178,16 @@ fun ProgressContent(
 
 @Composable
 fun FinishedContent(
-    state: SessionDetailUiState.Success,
+    state: UiState.Success,
     onOverrideGrade: (Int, Float) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("State: FINISHED", style = MaterialTheme.typography.titleMedium)
-        Text("Max Scale Evaluated: ${100f}")
+        Text("Max Scale Evaluated: ${state.currentGradeDisplay}")
         Spacer(modifier = Modifier.height(16.dp))
         
         LazyColumn {
-            items(state.students, key = { it.id }) { student ->
+            items(state.groupStudents, key = { it.id }) { student ->
                 val result = state.results[student.id]
                 var overrideInput by remember { mutableStateOf("") }
                 
@@ -203,10 +195,11 @@ fun FinishedContent(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(student.name, style = MaterialTheme.typography.titleMedium)
                         if (result != null) {
-                            val computedDisplayGrade = 10 * (100f)
-                            Text("Stored JSON Metrics: ${result.data}", style = MaterialTheme.typography.bodySmall)
+                            val computedDisplayGrade = (result.sessionResult?.grade ?: 0f) * state.currentGradeDisplay
+                            val isOverridden = result.studentSessionResult.updated
+                            Text("Stored JSON Metrics: ${result.studentSessionResult.data}", style = MaterialTheme.typography.bodySmall)
                             Text(
-                                "Final Evaluated Score: $computedDisplayGrade ${if (result.updated) "(Overridden)" else ""}",
+                                "Final Evaluated Score: $computedDisplayGrade ${if (isOverridden) "(Overridden)" else ""}",
                                 style = MaterialTheme.typography.titleSmall
                             )
                         } else {
