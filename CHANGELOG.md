@@ -24,12 +24,12 @@ Bump: [Numéro]
 
 ---
 
-## [v0.0.8-a] - 2026-06-23
+## [v0.0.8-b] - 2026-06-23
 
-# Skite - Alpha v0.0.8-a
+# Skite - Beta v0.0.8-b
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 _Fix CI and test release_
 
@@ -46,8 +46,8 @@ Fix ci and test release
 
 # Skite - Alpha v0.0.7-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 _remove skip ci by bump_version_
 
@@ -64,8 +64,8 @@ _remove skip ci by bump_version_
 
 # Skite - Alpha v0.0.6-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 _fixes for CI_
 
@@ -82,8 +82,8 @@ _fixes for CI_
 
 # Skite - Alpha v0.0.5-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 _Test bump_token error_
 
@@ -100,8 +100,8 @@ _Test bump_token error_
 
 # Skite - Alpha v0.0.4-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 Test
 
@@ -118,8 +118,8 @@ Test
 
 # Skite - Alpha v0.0.3-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 Fix bump_version
 
@@ -137,8 +137,8 @@ Fix bump_version
 
 # Skite - Alpha v0.0.2-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 Fix CI
 
@@ -156,8 +156,8 @@ Fix CI
 
 # Skite - Alpha v0.0.1-a
 
-> [!WARNING]
-> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
 
 _DryTest_
 
