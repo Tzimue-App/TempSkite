@@ -3,6 +3,7 @@ package com.example.skite.data.db
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.skite.data.entities.enums.SessionTool
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -82,12 +83,12 @@ class DatabaseSeeder @Inject constructor(
         
         val tjResultType = com.example.skite.data.entities.resultType.ResultType(
             name = "TJ",
-            toolName = "default",
+            toolName = SessionTool.NONE,
             data = tjSkills
         )
         val volleyResultType = com.example.skite.data.entities.resultType.ResultType(
             name = "volley Test",
-            toolName = "default",
+            toolName = SessionTool.NONE,
             data = volleySkills
         )
         database.resultTypeDao().add(tjResultType)
@@ -104,12 +105,12 @@ class DatabaseSeeder @Inject constructor(
         val tjVolleySessionType = com.example.skite.data.entities.sessionType.SessionType(
             name = "TJ Volley",
             resultTypeId = tjResultTypeId,
-            tool = "default"
+            tool = SessionTool.NONE
         )
         val testVolleySessionType = com.example.skite.data.entities.sessionType.SessionType(
             name = "Test Volley",
             resultTypeId = volleyResultTypeId,
-            tool = "default"
+            tool = SessionTool.NONE
         )
         
         database.sessionTypeDao().add(tjVolleySessionType)

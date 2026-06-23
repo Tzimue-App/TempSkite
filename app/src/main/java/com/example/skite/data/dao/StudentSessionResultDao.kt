@@ -31,4 +31,8 @@ interface StudentSessionResultDao : BaseDao<StudentSessionResult, Int> {
     @Transaction
     @Query("SELECT * FROM Tstudent_session_result WHERE id = :studentSessionId")
     fun findWithSessionResultFlow(studentSessionId: Int): Flow<StudentSessionResultWithSessionResult?>
+
+    @Transaction
+    @Query("SELECT * FROM Tstudent_session_result WHERE sessionId = :sessionId")
+    fun findWithSessionResultBySessionIdFlow(sessionId: Int): Flow<List<StudentSessionResultWithSessionResult>>
 }

@@ -10,7 +10,7 @@ data class ResultType(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    val toolName: String = SessionTool.NONE.value,
+    val toolName: SessionTool = SessionTool.NONE,
     val data: String = ""
 ) : EntityWithId<Int> {
     override fun entityId(): Int = id

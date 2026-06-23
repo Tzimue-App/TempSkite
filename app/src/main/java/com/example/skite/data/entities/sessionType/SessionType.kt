@@ -27,7 +27,7 @@ data class SessionType(
     val id: Int = 0,
     val name: String,
     val resultTypeId: Int = 0,
-    val tool: String = SessionTool.NONE.value,
+    val tool: SessionTool = SessionTool.NONE,
     val defaultGradeDisplay: Int = 100,
 ) : EntityWithId<Int> {
     override fun entityId(): Int = id

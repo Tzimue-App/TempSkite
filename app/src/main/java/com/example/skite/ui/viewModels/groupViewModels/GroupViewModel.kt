@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupViewModel @Inject constructor(
+    //TODO Check why I have the warning "Constructor parameter is never used as a property "
     private val groupRepository: GroupRepository,
     private val studentRepository: StudentRepository,
     savedStateHandle: SavedStateHandle
@@ -49,6 +50,7 @@ class GroupViewModel @Inject constructor(
     private val groupId: Int = savedStateHandle[ARG_GROUP_ID]
         ?: error("groupId missing from SavedStateHandle")
 
+    //TODO Change this feature to use the UI (cf SessionDetailScreen)
     private val _isStudentListExpanded = MutableStateFlow(false)
     private val _isSessionListExpanded = MutableStateFlow(false)
     private val _manualError = MutableStateFlow<UiState.Error?>(null)
@@ -89,10 +91,12 @@ class GroupViewModel @Inject constructor(
         _manualError.value = null
     }
 
+    //TODO This should be handle by the UI
     fun toggleStudentListExpanded() {
         _isStudentListExpanded.value = !_isStudentListExpanded.value
     }
 
+    //TODO This should be handle by the UI
     fun toggleSessionListExpanded() {
         _isSessionListExpanded.value = !_isSessionListExpanded.value
     }

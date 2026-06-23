@@ -34,6 +34,7 @@ fun GroupDetailScreen(
     GroupDetailScreenContent(
         uiState = uiState,
         openDrawer = openDrawer,
+        //TODO these toggle function should be handle by the UI cf SessionPlannedContent
         onToggleStudents = viewModel::toggleStudentListExpanded,
         onToggleSessions = viewModel::toggleSessionListExpanded,
         onAddStudents = viewModel::addStudents,

@@ -1,44 +1,48 @@
 package com.example.skite.ui.components.settings
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.skite.R
 import com.example.skite.ui.navigation.Screen
 
 data class SettingsCategoryItem(
-    val title: String,
-    val subtitle: String,
+    @StringRes val title: Int,
+    @StringRes val subtitle: Int,
     val icon: ImageVector,
     val route: String
 )
 
 private val settingsCategories = listOf(
     SettingsCategoryItem(
-        title = "Session & Result",
-        subtitle = "Configure session types and result templates",
+        title = R.string.settings_screen_session_result_title,
+        subtitle = R.string.settings_screen_session_result_subtitle,
         icon = Icons.Default.Grade,
         route = Screen.SettingsSessionResult.route
     ),
     SettingsCategoryItem(
-        title = "Example 2",
-        subtitle = "Placeholder for future settings",
-        icon = Icons.Default.Settings,
-        route = "" // TODO: replace with Screen.SettingsExample2.route
+        title = R.string.settings_screen_language_title,
+        subtitle = R.string.settings_screen_language_subtitle,
+        icon = Icons.Default.Language,
+        route = Screen.SettingsLanguage.route
     ),
     SettingsCategoryItem(
-        title = "Example 3",
-        subtitle = "Placeholder for future settings",
-        icon = Icons.Default.Quiz,
-        route = "" // TODO: replace with Screen.SettingsExample3.route
+        title = R.string.settings_screen_calendar_title,
+        subtitle = R.string.settings_screen_calendar_subtitle,
+        icon = Icons.Default.EditCalendar,
+        route = Screen.SettingsCalender.route
     )
 )
 
