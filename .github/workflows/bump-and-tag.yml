@@ -22,8 +22,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BUMP_TOKEN }}
+          token: ${{ secrets.BUMP_TOKEN || github.token }}
           fetch-depth: 0  # Full history needed for back-merge
+
+      - name: Check Token Presence
+        run: |
+          if [ -z "${{ secrets.BUMP_TOKEN }}" ]; then
+            echo "::warning::BUMP_TOKEN is empty. Falling back to GITHUB_TOKEN. Pushed tags will NOT trigger release workflows."
+          else
+            echo "✅ BUMP_TOKEN is present."
+          fi
 
       - name: Configure Git identity
         run: |
