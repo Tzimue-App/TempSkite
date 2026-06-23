@@ -281,6 +281,35 @@ def update_changelog(new_version):
     write_file(CHANGELOG_FILE, new_changelog)
     return clean_notes
 
+def promote_changelog_version(old_version, new_version):
+    """
+    Sur 'test', on ne consomme pas [Unreleased] (déjà vidé par le bump dev).
+    On relabellise le bloc déjà existant de la version alpha promue.
+    """
+    content = read_file(CHANGELOG_FILE)
+    today = datetime.date.today().isoformat()
+
+    escaped_old = re.escape(old_version)
+    pattern = rf'## \[{escaped_old}\] - \d{{4}}-\d{{2}}-\d{{2}}'
+    replacement = f"## [{new_version}] - {today}"
+
+    new_content, count = re.subn(pattern, replacement, content, count=1)
+    if count == 0:
+        print(f"⚠️  Bloc CHANGELOG pour {old_version} introuvable — fallback.")
+        return update_changelog(new_version)
+
+    # Met aussi à jour le titre et l'alerte de statut (Alpha -> Beta)
+    new_content = new_content.replace(
+        f"# {PROJECT_NAME} - {get_stage_name(old_version)} {old_version}",
+        f"# {PROJECT_NAME} - {get_stage_name(new_version)} {new_version}"
+    )
+    new_content = new_content.replace(
+        get_status_alert(old_version),
+        get_status_alert(new_version)
+    )
+
+    write_file(CHANGELOG_FILE, new_content)
+
 
 # ──────────────────────────────────────────────
 # Git operations
@@ -342,6 +371,7 @@ def main():
         # On test: promote alpha → beta (no version number bump)
         new_version = promote_version_to_beta(current_version)
         print(f"🔄 Promotion Alpha → Beta")
+        release_note = None
     else:
         # On dev: read bump type from CHANGELOG
         bump_type = get_bump_type_from_changelog()
@@ -382,7 +412,10 @@ def main():
     print("\n📝 Mise à jour des fichiers...")
     update_build_gradle(new_version, new_code)
     print(f"   ✅ {BUILD_GRADLE}")
-    release_notes = update_changelog(new_version)
+    if branch == "test":
+        promote_changelog_version(current_version, new_version)
+    else:
+        update_changelog(new_version)
     print(f"   ✅ {CHANGELOG_FILE}")
 
     # 7. Git commit & tag
