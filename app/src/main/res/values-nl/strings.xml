@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Skite</string>
+    <string name="home_title">Homepagina</string>
+    <string name="home_welcome">Welkom bij Skite</string>
+    <string name="home_description">"Uw ideale partner voor het vereenvoudigd beheren van groepen en trainingssessies. "</string>
+    <string name="settings_screen_language_title">Taal</string>
+</resources>

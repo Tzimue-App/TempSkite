@@ -1,0 +1,45 @@
+# Gradle files
+.gradle/
+build/
+**/build/
+
+# Kotlin files
+.kotlin/
+kotlin-js-store/
+
+# Android Studio / IntelliJ files
+.idea/
+*.iml
+*.iws
+*.ipr
+local.properties
+.navigation/
+.externalNativeBuild/
+.cxx/
+
+# Captures and logs
+captures/   
+*.log
+
+# Designs
+UI Designs/*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Generated files
+*.apk
+*.aar
+*.jks
+*.keystore
+google-services.json
+
+# Secrets
+secrets.properties
+
+# Optional: Keep the gradle wrapper but ignore the gradle-wrapper.jar if you want, 
+# though usually it's better to keep it for CI/CD. 
+# We'll stick to the standard Android .gitignore.
