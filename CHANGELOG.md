@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-Fix bump_version
+_Description: Écrire le résumé ici..._
 
 <!--
 BUMP_TYPE :
@@ -10,13 +10,31 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: 3
+Bump: [Numéro]
 
 ### Features
 
 ### Patches
 
 ### Bug Fixes
+
+### Deployment & Configuration
+
+### ChangeLog
+
+---
+
+## [v0.0.3-a] - 2026-06-23
+
+# Skite - Alpha v0.0.3-a
+
+> [!WARNING]
+> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+
+Fix bump_version
+
+
+
 
 ### Deployment & Configuration
 - VersionCode change only in test branch 
