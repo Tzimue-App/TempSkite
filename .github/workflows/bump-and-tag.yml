@@ -25,6 +25,10 @@ jobs:
           token: ${{ secrets.BUMP_TOKEN || github.token }}
           fetch-depth: 0  # Full history needed for back-merge
 
+      - name: Verify BUMP_TOKEN identity
+        run: |
+          curl -s -H "Authorization: token ${{ secrets.BUMP_TOKEN }}" https://api.github.com/user | grep login
+
       - name: Check Token Presence
         run: |
           if [ -z "${{ secrets.BUMP_TOKEN }}" ]; then
