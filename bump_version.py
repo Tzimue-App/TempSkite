@@ -287,9 +287,9 @@ def update_changelog(new_version):
 # ──────────────────────────────────────────────
 
 def git_commit_and_tag(new_version):
-    """Stages changed files, commits with [skip ci], creates an annotated tag."""
+    """Stages changed files, commits with [bump_version], creates an annotated tag."""
     run_command(f"git add {BUILD_GRADLE} {CHANGELOG_FILE}")
-    run_command(f'git commit -m "chore(release): {new_version} [skip ci]"')
+    run_command(f'git commit -m "chore(release): {new_version} [bump_version]"')
     run_command(f'git tag -a {new_version} -m "Release {new_version}"')
 
 
@@ -303,7 +303,7 @@ def back_merge_to_dev():
     """Back-merges the current test branch into dev to avoid conflicts."""
     print("🔄 Back-merge test → dev...")
     run_command("git checkout dev")
-    run_command('git merge test -m "chore: back-merge test into dev [skip ci]"')
+    run_command('git merge test -m "chore: back-merge test into dev [bump_version]"')
     run_command("git push origin dev")
     run_command("git checkout test")
 
