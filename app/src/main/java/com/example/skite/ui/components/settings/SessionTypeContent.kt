@@ -27,7 +27,7 @@ fun SessionTypeContent(
     var selectedResultType by remember { mutableStateOf<ResultType?>(null) }
     var defaultGradeDisplay by remember { mutableIntStateOf(100) }
 
-    val filteredResultTypes = resultTypes.filter { it.toolName == selectedTool.value }
+    val filteredResultTypes = resultTypes.filter { it.toolName == selectedTool }
     val isEditing = editingId != 0
     val isSaveEnabled = name.isNotBlank() && selectedResultType != null
 
@@ -53,7 +53,7 @@ fun SessionTypeContent(
                 SessionType(
                     id = editingId,
                     name = name,
-                    tool = selectedTool.value,
+                    tool = selectedTool,
                     resultTypeId = resultId,
                     defaultGradeDisplay = defaultGradeDisplay
                 )
@@ -89,7 +89,7 @@ fun SessionTypeContent(
                     editingId = sessionType.id
                     name = sessionType.name
                     selectedTool = SessionTool.entries
-                        .find { it.value == sessionType.tool } ?: SessionTool.NONE
+                        .find { it == sessionType.tool } ?: SessionTool.NONE
                     selectedResultType = boundResult
                     defaultGradeDisplay = sessionType.defaultGradeDisplay
                 }

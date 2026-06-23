@@ -11,6 +11,8 @@ import com.example.skite.ui.screens.groupScreen.GroupDetailScreen
 import com.example.skite.ui.screens.groupScreen.GroupListScreen
 import com.example.skite.ui.screens.sessionScreen.SessionListScreen
 import com.example.skite.ui.screens.sessionScreen.SessionDetailScreen
+import com.example.skite.ui.screens.settingsScreen.CalendarScreen
+import com.example.skite.ui.screens.settingsScreen.LanguageScreen
 import com.example.skite.ui.screens.settingsScreen.SessionResultScreen
 import com.example.skite.ui.screens.studentScreen.StudentListScreen
 import com.example.skite.ui.screens.studentScreen.StudentDetailScreen
@@ -108,6 +110,17 @@ fun NavGraph(
         composable(Screen.SettingsSessionResult.route) {
             SessionResultScreen(
                 openDrawer = openDrawer
+            )
+        }
+
+        composable(Screen.SettingsLanguage.route) {
+            LanguageScreen(
+                openDrawer = openDrawer
+            )
+        }
+
+        composable(Screen.SettingsCalender.route) {
+            CalendarScreen(
             )
         }
     }

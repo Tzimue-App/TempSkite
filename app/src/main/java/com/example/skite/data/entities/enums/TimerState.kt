@@ -1,4 +1,4 @@
-package com.example.skite.ui.screens.sessionScreen
+package com.example.skite.data.entities.enums
 
 enum class TimerState {
     RUNNING, PAUSED, STOPPED

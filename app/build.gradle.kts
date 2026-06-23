@@ -16,7 +16,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "v0.0.0-a"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -64,6 +64,8 @@ dependencies {
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.54")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
     kapt("com.google.dagger:hilt-android-compiler:2.54")
 
     // Room (Inferred from DatabaseSeeder)

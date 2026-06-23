@@ -67,7 +67,7 @@ fun ResultTypeContent(
                 ResultType(
                     id = editingId,
                     name = name,
-                    toolName = selectedTool.value,
+                    toolName = selectedTool,
                     data = data
                 )
             )
@@ -112,7 +112,7 @@ fun ResultTypeContent(
                     editingId = resultType.id
                     name = resultType.name
                     selectedTool = SessionTool.entries
-                        .find { it.value == resultType.toolName } ?: SessionTool.NONE
+                        .find { it == resultType.toolName } ?: SessionTool.NONE
                     // TODO: parse resultType.data JSON to repopulate builder state
                     // when editing an existing ResultType
                 }

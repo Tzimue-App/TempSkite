@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Generic -->
-    <string name="app_name">Skite</string>
+    <string name="app_name" translatable="false">Skite</string>
     <string name="no_data">Aucune donnée à afficher</string>
     <string name="search_bar_no_result">Aucun résultat pour \"%1$s\"</string>
     <string name="retry">Réessayer</string>
@@ -8,6 +9,12 @@
     <string name="add">Ajouter</string>
     <string name="cancel">Annuler</string>
     <string name="generic_error">Une erreur est survenue.</string>
+    <string name="TBD">Text TBD</string>
+
+    <!-- Language -->
+    <string name="lang_fr">Fr</string>
+    <string name="lang_en">En</string>
+    <string name="lang_nl">Nl</string>
 
     <!-- HomeScreen -->
     <string name="home_title">Accueil</string>
@@ -44,7 +51,13 @@
     <!-- StudentDetailScreen -->
     <string name="temp_student_detail_group_title">Groupe :</string>
 
-    <!-- Settings Screens -->
+    <!-- Settings Categories -->
+    <string name="settings_screen_session_result_title">Session &amp; Result</string>
+    <string name="settings_screen_session_result_subtitle">Configuration des types de session et le calcul des résultats</string>
+    <string name="settings_screen_language_title">Langue</string>
+    <string name="settings_screen_language_subtitle">Configuration de la langue de l\'application</string>
+    <string name="settings_screen_calendar_title">Calendrier</string>
+    <string name="settings_screen_calendar_subtitle">Configuration des éphémérides</string>
 
     <!-- Session Result Screens -->
     <string name="settings_session_result_title">Paramétrage des cours et des résultats</string>
