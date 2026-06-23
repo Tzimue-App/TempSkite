@@ -15,7 +15,7 @@ android {
         applicationId = "com.example.skite"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
+        versionCode = 1
         versionName = "v0.0.1-a"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

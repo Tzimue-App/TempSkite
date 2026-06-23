@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-_Description: Écrire le résumé ici..._
+Fix CI
 
 <!--
 BUMP_TYPE :
@@ -10,13 +10,14 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: [Numéro]
+Bump: 3
 
 ### Features
 
 ### Patches
 
 ### Bug Fixes
+- Fix CI
 
 ### Deployment & Configuration
 
