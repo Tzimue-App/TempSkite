@@ -359,7 +359,11 @@ def main():
 
         new_version = calculate_new_version(current_version, bump_type, branch)
 
-    new_code = current_code + 1
+    if branch == "test":
+        new_code = current_code + 1
+    else:
+        new_code = current_code
+
     print(f"🆕 Nouvelle version: {new_version} (code: {new_code})")
 
     # 4. Dry-run check
