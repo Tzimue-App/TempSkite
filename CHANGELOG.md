@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-_Description: Écrire le résumé ici..._
+Fix bump_version
 
 <!--
 BUMP_TYPE :
@@ -10,7 +10,7 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: [Numéro]
+Bump: 3
 
 ### Features
 
@@ -19,6 +19,7 @@ Bump: [Numéro]
 ### Bug Fixes
 
 ### Deployment & Configuration
+- VersionCode change only in test branch 
 
 ### ChangeLog
 
