@@ -24,6 +24,24 @@ Bump: [Numéro]
 
 ---
 
+## [v0.1.1-a] - 2026-06-24
+
+# Skite - Alpha v0.1.1-a
+
+> [!WARNING]
+> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+
+_Léger changement_
+
+
+
+
+### Deployment & Configuration
+- je sais pas quoi c'est un test
+### ChangeLog
+
+---
+
 ## [v0.1.0-a] - 2026-06-24
 
 # Skite - Alpha v0.1.0-a
