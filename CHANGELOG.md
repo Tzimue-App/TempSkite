@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-_patch for changlog test release and fix for build-android_
+_Description: Écrire le résumé ici..._
 
 <!--
 BUMP_TYPE :
@@ -10,14 +10,34 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: 3
+Bump: [Numéro]
 
 ### Features
 
 ### Patches
-- android build
+
 ### Bug Fixes
 
+### Deployment & Configuration
+
+### ChangeLog
+
+---
+
+## [v0.0.9-a] - 2026-06-24
+
+# Skite - Alpha v0.0.9-a
+
+> [!WARNING]
+> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+
+_patch for changlog test release and fix for build-android_
+
+
+
+
+### Patches
+- android build
 ### Deployment & Configuration
 - update test release creator
 ### ChangeLog
