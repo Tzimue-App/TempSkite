@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-_Description: Écrire le résumé ici..._
+_patch for changlog test release and fix for build-android_
 
 <!--
 BUMP_TYPE :
@@ -10,16 +10,16 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: [Numéro]
+Bump: 3
 
 ### Features
 
 ### Patches
-
+- android build
 ### Bug Fixes
 
 ### Deployment & Configuration
-
+- update test release creator
 ### ChangeLog
 
 ---

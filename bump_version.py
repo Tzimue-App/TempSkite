@@ -36,6 +36,14 @@ PROJECT_NAME = "Skite"
 VERSION_NAME_PATTERN = r'versionName\s*=\s*"(.*?)"'
 VERSION_CODE_PATTERN = r'versionCode\s*=\s*(\d+)'
 
+VERSION_BLOCK_PATTERN = re.compile(
+    r'## \[(v[\w\.\-]+)\] - (\d{4}-\d{2}-\d{2})\n\n(.*?)\n---',
+    re.DOTALL
+)
+
+SECTION_HEADERS = ["Features", "Patches", "Bug Fixes", "Deployment & Configuration", "ChangeLog"]
+
+
 BRANCH_SUFFIX_MAP = {
     "dev": "-a",
     "test": "-b",
@@ -310,6 +318,76 @@ def promote_changelog_version(old_version, new_version):
 
     write_file(CHANGELOG_FILE, new_content)
 
+def parse_sections(block_body):
+    """Extrait {nom_section: [lignes]} depuis le corps d'un bloc de version."""
+    sections = {}
+    matches = re.findall(r'### (.+?)\n(.*?)(?=\n### |\Z)', block_body, re.DOTALL)
+    for header, content in matches:
+        header = header.strip()
+        lines = [l.strip() for l in content.strip().split('\n') if l.strip()]
+        if lines:
+            sections.setdefault(header, []).extend(lines)
+    return sections
+
+
+def aggregate_changelog_for_beta(old_version, new_version):
+    """
+    Sur 'test' : agrège tous les blocs Alpha poussés depuis la dernière Beta,
+    fusionne leurs sections (Features/Patches/Bug Fixes/...), et insère
+    un nouveau bloc Beta synthétique en tête. Les blocs Alpha d'origine
+    restent intacts en dessous (historique non détruit).
+    """
+    content = read_file(CHANGELOG_FILE)
+    today = datetime.date.today().isoformat()
+
+    blocks = list(VERSION_BLOCK_PATTERN.finditer(content))
+    if not blocks:
+        print("⚠️  Aucun bloc de version trouvé — fallback.")
+        return promote_changelog_version(old_version, new_version)
+
+    # Collecte les blocs Alpha les plus récents, jusqu'à la dernière Beta rencontrée
+    consumed_blocks = []
+    for b in blocks:
+        if b.group(1).endswith("-b"):
+            break
+        consumed_blocks.append(b)
+
+    if not consumed_blocks:
+        print("⚠️  Pas de nouvelle Alpha à agréger depuis la dernière Beta — fallback.")
+        return promote_changelog_version(old_version, new_version)
+
+    # Fusionne les sections, du plus ancien au plus récent (ordre chronologique)
+    merged_sections = {}
+    for b in reversed(consumed_blocks):
+        for header, lines in parse_sections(b.group(3)).items():
+            merged_sections.setdefault(header, [])
+            for line in lines:
+                if line not in merged_sections[header]:
+                    merged_sections[header].append(line)
+
+    stage = get_stage_name(new_version)
+    status_alert = get_status_alert(new_version)
+
+    body_parts = []
+    for header in SECTION_HEADERS:
+        if merged_sections.get(header):
+            body_parts.append(f"### {header}")
+            body_parts.extend(merged_sections[header])
+            body_parts.append("")
+    notes_body = "\n".join(body_parts).strip()
+
+    version_block = f"## [{new_version}] - {today}\n\n"
+    version_block += f"# {PROJECT_NAME} - {stage} {new_version}\n\n"
+    version_block += f"{status_alert}\n\n"
+    if notes_body:
+        version_block += f"{notes_body}\n\n"
+    version_block += "---"
+
+    insert_at = consumed_blocks[0].start()
+    new_content = content[:insert_at] + version_block + "\n\n" + content[insert_at:]
+    write_file(CHANGELOG_FILE, new_content)
+    return notes_body
+
 
 # ──────────────────────────────────────────────
 # Git operations
@@ -413,7 +491,7 @@ def main():
     update_build_gradle(new_version, new_code)
     print(f"   ✅ {BUILD_GRADLE}")
     if branch == "test":
-        promote_changelog_version(current_version, new_version)
+        aggregate_changelog_for_beta(current_version, new_version)
     else:
         update_changelog(new_version)
     print(f"   ✅ {CHANGELOG_FILE}")

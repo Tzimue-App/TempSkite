@@ -1,7 +1,7 @@
 name: "Build & Deploy Android"
 
 # Triggered when a beta tag is pushed (v*-b).
-# Builds the APK, attaches it to the GitHub Release, and deploys to Firebase.
+# Builds the APK, attaches it to the GitHub Release, and deploys to Firebase App Distribution.
 
 on:
   push:
@@ -40,6 +40,9 @@ jobs:
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
           echo "📦 Building $VERSION_NAME (code: $VERSION_CODE)"
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
@@ -62,16 +65,11 @@ jobs:
       # ──────────────────────────────────────
       # Firebase App Distribution
       # ──────────────────────────────────────
-      # Uncomment the step below once Firebase secrets are configured:
-      #   - FIREBASE_APP_ID: Your Firebase App ID (e.g. 1:123456789:android:abc123)
-      #   - FIREBASE_SERVICE_ACCOUNT_KEY: JSON key of a service account with
-      #     Firebase App Distribution Admin role
-
-      # - name: Deploy to Firebase App Distribution
-      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
-      #   with:
-      #     appId: ${{ secrets.FIREBASE_APP_ID }}
-      #     serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-      #     groups: testers
-      #     file: ${{ env.APK_PATH }}
-      #     releaseNotes: "Version ${{ env.VERSION_NAME }} (Build ${{ env.VERSION_CODE }})"
+      - name: Deploy to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          groups: testers
+          file: ${{ env.APK_PATH }}
+          releaseNotes: "Version ${{ env.VERSION_NAME }} (Build ${{ env.VERSION_CODE }})"
