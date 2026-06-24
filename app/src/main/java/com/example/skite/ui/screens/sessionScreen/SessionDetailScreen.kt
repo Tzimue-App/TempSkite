@@ -155,6 +155,13 @@ fun SessionDetailScreenContent(
                             }
                         }
                     }
+                    else -> {
+                        //TODO set up cancel screen
+                        ErrorContent(
+                            message = stringResource(R.string.TBD),
+                            onRetry = onRetry
+                        )
+                    }
                 }
             }
         }
