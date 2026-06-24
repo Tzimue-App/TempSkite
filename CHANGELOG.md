@@ -24,6 +24,24 @@ Bump: [Numéro]
 
 ---
 
+## [v0.1.0-a] - 2026-06-24
+
+# Skite - Alpha v0.1.0-a
+
+> [!WARNING]
+> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+
+_fix android build_
+
+
+
+
+### Deployment & Configuration
+- fix android build
+### ChangeLog
+
+---
+
 ## [v0.0.9-b] - 2026-06-24
 
 # Skite - Beta v0.0.9-b
