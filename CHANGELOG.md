@@ -24,6 +24,18 @@ Bump: [Numéro]
 
 ---
 
+## [v0.1.2-b] - 2026-06-24
+
+# Skite - Beta v0.1.2-b
+
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
+
+### Patches
+- Session state added cancel
+
+---
+
 ## [v0.1.2-a] - 2026-06-24
 
 # Skite - Alpha v0.1.2-a
