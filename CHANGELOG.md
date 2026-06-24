@@ -24,6 +24,18 @@ Bump: [Numéro]
 
 ---
 
+## [v0.1.3-b] - 2026-06-24
+
+# Skite - Beta v0.1.3-b
+
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
+
+### Patches
+- android logo added.
+
+---
+
 ## [v0.1.3-a] - 2026-06-24
 
 # Skite - Alpha v0.1.3-a

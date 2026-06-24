@@ -15,8 +15,8 @@ android {
         applicationId = "com.example.skite"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "v0.1.3-a"
+        versionCode = 7
+        versionName = "v0.1.3-b"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
