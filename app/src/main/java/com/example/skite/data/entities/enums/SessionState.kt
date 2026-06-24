@@ -1,7 +1,8 @@
 package com.example.skite.data.entities.enums
 
 enum class SessionState(val value: String) {
-    PLANNED("Planifié"),
+    PLANNED("Planifiée"),
     IN_PROGRESS("En cours"),
-    FINISHED("Terminé")
+    FINISHED("Terminée"),
+    CANCELED("Annulée")
 }
