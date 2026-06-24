@@ -70,6 +70,6 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-          groups: testers
+          groups: alphaTesters
           file: ${{ env.APK_PATH }}
           releaseNotes: "Version ${{ env.VERSION_NAME }} (Build ${{ env.VERSION_CODE }})"
