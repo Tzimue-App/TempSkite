@@ -24,6 +24,21 @@ Bump: [Numéro]
 
 ---
 
+## [v0.0.9-b] - 2026-06-24
+
+# Skite - Beta v0.0.9-b
+
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
+
+### Patches
+- android build
+
+### Deployment & Configuration
+- update test release creator
+
+---
+
 ## [v0.0.9-a] - 2026-06-24
 
 # Skite - Alpha v0.0.9-a
