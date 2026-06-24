@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-_Added Cancel session status_
+_Description: Écrire le résumé ici..._
 
 <!--
 BUMP_TYPE :
@@ -10,16 +10,34 @@ BUMP_TYPE :
 2 = Minor (0.X.0)
 3 = Patch (0.0.X)
 -->
-Bump: 3
+Bump: [Numéro]
 
 ### Features
 
 ### Patches
-- Session state added cancel
+
 ### Bug Fixes
 
 ### Deployment & Configuration
 
+### ChangeLog
+
+---
+
+## [v0.1.2-a] - 2026-06-24
+
+# Skite - Alpha v0.1.2-a
+
+> [!WARNING]
+> **Statut : Alpha.** Version de développement destinée aux tests d'intégration internes.
+
+_Added Cancel session status_
+
+
+
+
+### Patches
+- Session state added cancel
 ### ChangeLog
 
 ---
