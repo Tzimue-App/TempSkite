@@ -24,6 +24,18 @@ Bump: [Numéro]
 
 ---
 
+## [v0.1.4-b] - 2026-06-24
+
+# Skite - Beta v0.1.4-b
+
+> [!IMPORTANT]
+> **Statut : Beta.** Version de test stabilisée.
+
+### Deployment & Configuration
+- fix firebase group name
+
+---
+
 ## [v0.1.4-a] - 2026-06-24
 
 # Skite - Alpha v0.1.4-a
